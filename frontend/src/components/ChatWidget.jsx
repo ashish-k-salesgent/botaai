@@ -75,14 +75,14 @@ export default function ChatWidget({ clientId }) {
           onClick={() => setOpen(true)}
           data-testid="widget-bubble"
           style={{ background: theme }}
-          className="fixed bottom-6 right-6 w-14 h-14 text-white shadow-lg hover:scale-105 transition-transform z-50 flex items-center justify-center"
+          className="fixed bottom-20 right-6 w-14 h-14 text-white shadow-lg hover:scale-105 transition-transform z-50 flex items-center justify-center"
         >
           <MessageSquare size={22} />
         </button>
       )}
 
       {open && (
-        <div data-testid="widget-window" className="fixed bottom-6 right-6 w-96 max-w-[calc(100vw-3rem)] h-[560px] max-h-[calc(100vh-3rem)] bg-white border border-[var(--text-primary)] shadow-2xl flex flex-col z-50">
+        <div data-testid="widget-window" className="fixed bottom-20 right-6 w-96 max-w-[calc(100vw-3rem)] h-[560px] max-h-[calc(100vh-7rem)] bg-white border border-[var(--text-primary)] shadow-2xl flex flex-col z-50">
           <div style={{ background: theme }} className="text-white px-4 py-3 flex items-center justify-between">
             <div>
               <div className="font-display font-black tracking-tight">{tenant?.name || "BotAAI"}</div>
