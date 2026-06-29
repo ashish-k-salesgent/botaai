@@ -1,0 +1,108 @@
+{
+  "theme": "Light",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "vibe": "Objective, rigid, functional, high-performance, and precise. Moves away from typical generic 'SaaS purple' to an authoritative, linear aesthetic.",
+  "typography": {
+    "fonts": {
+      "headings": "Cabinet Grotesk",
+      "body": "IBM Plex Sans",
+      "mono": "JetBrains Mono"
+    },
+    "rules": {
+      "headings": "Tracking tight, uppercase labels with wide tracking, stark contrast between weights (Black vs Light). Never use Inter or Roboto for headings.",
+      "body": "Clean, highly legible for dense data arrays and chat logs.",
+      "hierarchy": {
+        "h1": "text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter",
+        "h2": "text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight",
+        "h3": "text-xl sm:text-2xl font-semibold",
+        "body": "text-base leading-relaxed",
+        "labels": "text-xs font-mono uppercase tracking-[0.2em]"
+      }
+    }
+  },
+  "colors": {
+    "background": {
+      "light": "#FFFFFF",
+      "light_secondary": "#F9FAFB",
+      "dark_toggle": "#0A0A0A"
+    },
+    "text": {
+      "primary": "#111827",
+      "secondary": "#4B5563",
+      "muted": "#9CA3AF"
+    },
+    "brand": {
+      "primary": "#002FA7",
+      "primary_hover": "#00227A",
+      "accent_destructive": "#FF3B30",
+      "accent_warning": "#FFCC00",
+      "accent_success": "#34C759"
+    },
+    "border": "#E5E7EB",
+    "rules": "95% monochrome. Color is used strictly as a function (to guide action or indicate status). No generic full-screen gradients. Borders are crisp 1px lines."
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous spacing on marketing pages. Dense, highly structured 'Control Room' grid for the dashboard. Progressive disclosure to hide complexity.",
+    "container_padding": "p-6 md:p-8",
+    "dashboard_grid": "Grid hierarchy with tight gaps (gap-4). Every pixel utilized. Single-metric focus for top KPIs.",
+    "marketing_grid": "Bento 'Tetris' grid. Asymmetry and visual tension.",
+    "border_radius": "rounded-none or rounded-sm. No soft, large pill radiuses unless explicitly needed for a chat bubble."
+  },
+  "components": {
+    "strategy": "Shadcn components heavily customized to remove 'Vercel-default' look. Use pure HTML/Tailwind for marketing layout.",
+    "buttons": "Sharp edges, high contrast. Primary button is pure Brand Primary (#002FA7) with white text. Hover state darkens.",
+    "cards": "Flat background, 1px subtle border, no soft shadow. Strict, technical look.",
+    "kanban_board": "Columns use border-collapse style. Background is secondary grey. Tickets are stark white cards with strict 1px borders.",
+    "chat_bubbles": "Agent bubbles in light grey, User bubbles in high-contrast primary or stark dark grey. Crisp corners except for the pointing edge.",
+    "status_badges": "Minimalist. Not pill-shaped. Small rectangle with a dot indicator or pure colored text on faint background.",
+    "knowledge_base_table": "Dense data table layout. Right-aligned numbers, left-aligned text. Strict row borders.",
+    "inputs": "Shadcn input with ring-offset removed. Focus state is a sharp 1px or 2px solid primary border, no glow.",
+    "embed_widget": "Floating bottom-right bubble. Expands into a clean, minimalist chat interface matching the Swiss aesthetic."
+  },
+  "motion_and_interactions": {
+    "philosophy": "Minimalist, micro-interactions for feedback. Fast, snappy.",
+    "hover_states": "Crisp background darkens or border color shifts. No slow, floaty translates.",
+    "drag_and_drop": "Kanban uses Framer Motion for smooth drag-and-drop feedback. Ghost element on drag.",
+    "page_transitions": "Instant or very fast fade (150ms)."
+  },
+  "media": {
+    "image_urls": {
+      "hero_background": {
+        "url": "https://images.pexels.com/photos/29506603/pexels-photo-29506603.jpeg",
+        "description": "Vibrant digital abstract render featuring multi-faceted crystal shapes. Use as a masked overlay or background texture for the marketing hero section."
+      },
+      "hero_alt": {
+        "url": "https://images.unsplash.com/photo-1643228995868-bf698f67d053",
+        "description": "Abstract glass cubes. Can be used in feature sections or AI configuration pages to represent data/RAG."
+      },
+      "logo_1": {
+        "url": "https://images.unsplash.com/photo-1764344815160-0e2afc6939a0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHwzfHxjb21wYW55JTIwbG9nbyUyMHdoaXRlJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3ODI2MzExOTJ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Used in the 'Trusted By' section on the landing page."
+      },
+      "logo_2": {
+        "url": "https://images.pexels.com/photos/21898300/pexels-photo-21898300.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Used in the 'Trusted By' section on the landing page."
+      },
+      "logo_3": {
+        "url": "https://images.pexels.com/photos/26576975/pexels-photo-26576975.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Used in the 'Trusted By' section on the landing page."
+      },
+      "team_office": {
+        "url": "https://images.unsplash.com/photo-1551434678-e076c223a692?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1NzZ8MHwxfHNlYXJjaHwyfHxjdXN0b21lciUyMHN1cHBvcnQlMjB0ZWFtJTIwcHJvZmVzc2lvbmFsJTIwb2ZmaWNlfGVufDB8fHx8MTc4MjU0NzY0Mnww&ixlib=rb-4.1.0&q=85",
+        "description": "Can be used in the 'About' or 'For Teams' section on the landing page."
+      }
+    },
+    "icons": "Use lucide-react (default). For dense dashboards, Phosphor Icons (@phosphor-icons/react) is highly recommended for its crisp, technical feel."
+  },
+  "testing": {
+    "attributes": "All interactive elements MUST include data-testid. Example: data-testid='ticket-card-123' or data-testid='kanban-column-inprogress'."
+  },
+  "instructions_to_main_agent": [
+    "Install required fonts (Cabinet Grotesk, IBM Plex Sans, JetBrains Mono) via Google Fonts or custom font faces in index.css.",
+    "Implement the landing page using raw HTML/Tailwind for maximum layout control, applying the Bento Grid pattern.",
+    "Build the dashboard using heavily customized Shadcn components (1px borders, rounded-none/sm, high contrast text).",
+    "Ensure Kanban board uses a robust drag-and-drop library (e.g., @hello-pangea/dnd or standard HTML5 DnD) with clear visual indicators.",
+    "Create the embedded chat widget as a fixed, bottom-right element that toggles a chat window.",
+    "Apply data-testid to all CTA buttons, nav links, and interactive dashboard elements."
+  ]
+}
