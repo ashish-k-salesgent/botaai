@@ -1,55 +1,76 @@
 import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Toaster } from "sonner";
+import "@/index.css";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import { AuthProvider, useAuth } from "@/lib/auth";
+import Landing from "@/pages/Landing";
+import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
+import AppShell from "@/components/AppShell";
+import Dashboard from "@/pages/Dashboard";
+import Tickets from "@/pages/Tickets";
+import TicketDetail from "@/pages/TicketDetail";
+import Chats from "@/pages/Chats";
+import KnowledgeBase from "@/pages/KnowledgeBase";
+import Bots from "@/pages/Bots";
+import Users from "@/pages/Users";
+import Analytics from "@/pages/Analytics";
+import Settings from "@/pages/Settings";
+import SuperAdmin from "@/pages/SuperAdmin";
+import WidgetDemo from "@/pages/WidgetDemo";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+function Protected({ children, superAdmin = false }) {
+  const { user, loading } = useAuth();
+  const loc = useLocation();
+  if (loading) return <div className="p-10 font-mono text-sm">Loading…</div>;
+  if (!user) return <Navigate to="/login" state={{ from: loc.pathname }} replace />;
+  if (superAdmin && user.role !== "super_admin")
+    return <Navigate to="/app" replace />;
+  return children;
+}
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <Toaster position="top-right" richColors />
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/widget-demo" element={<WidgetDemo />} />
+
+          <Route
+            path="/app"
+            element={
+              <Protected>
+                <AppShell />
+              </Protected>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="tickets" element={<Tickets />} />
+            <Route path="tickets/:id" element={<TicketDetail />} />
+            <Route path="chats" element={<Chats />} />
+            <Route path="knowledge" element={<KnowledgeBase />} />
+            <Route path="bots" element={<Bots />} />
+            <Route path="users" element={<Users />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
+
+          <Route
+            path="/superadmin"
+            element={
+              <Protected superAdmin>
+                <SuperAdmin />
+              </Protected>
+            }
+          />
         </Routes>
-      </BrowserRouter>
-    </div>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

@@ -1,0 +1,36 @@
+{
+  "summary": "First full-stack test of BotAAI. Backend: 17/17 pytest tests passed covering auth (signup/login/me/super admin), bots CRUD, KB chunking+search, tickets CRUD with auto code BOTAAI-1xx, comments, users CRUD with self-delete block, widget public flow (init + message via Gemini + escalate), notifications, analytics summary, super admin tenant listing/patch/stats, super-admin authorization gating, and multi-tenant isolation. Frontend: Landing→Signup→Dashboard, 9-column Kanban, KB add+search, Bots/Users/Analytics/Settings pages render, Super admin login routes to /superadmin with enriched tenant list, Widget Demo opens chat window, gets bot greeting, echoes user message and receives Gemini-generated bot reply.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/widget/message", "issue": "Encountered a transient 500 with body 'litellm.BadRequestError: Budget has been exceeded! Current cost: 0.0, Max budget: 0.0' on first call. Subsequent calls succeeded and final widget test passed end-to-end. Possible intermittent LiteLLM budget throttle on EMERGENT_LLM_KEY — main agent should monitor budget config."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/widget-demo (and any host page using ChatWidget)", "issues": ["The floating widget bubble (fixed bottom-6 right-6) is rendered at the same screen corner as the platform's 'Made with Emergent' badge in the preview environment, partially overlapping it. Real user clicks still work but UX is cramped. Consider offsetting the bubble (e.g., bottom-20 right-6) or supporting a configurable position prop. Same overlap affects /app/* pages when the widget is embedded."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/backend_results.xml"],
+  "action_items": [
+    "Verify EMERGENT_LLM_KEY budget config to avoid intermittent 'Budget exceeded' 500s in widget/message.",
+    "Offset ChatWidget bubble position so it does not overlap the preview 'Made with Emergent' badge."
+  ],
+  "critical_code_review_comments": [
+    "server.py is 832 lines — past the 700 LOC soft cap; recommend splitting into routers (auth.py, tenants.py, tickets.py, kb.py, widget.py, admin.py) for maintainability.",
+    "TenantUpdate model exposes 'status' and 'plan' on PATCH /api/tenant (tenant self-update). Currently the handler filters to only {name, branding} so safe, but the schema permits sending status/plan from any tenant admin — clarify with a dedicated TenantSelfUpdate model to make intent explicit.",
+    "answer_with_rag/classify_message do not enforce a per-request timeout; a slow Gemini call will block the widget/message handler. Add asyncio.wait_for with sensible timeout + graceful fallback.",
+    "JWT TTL is 7 days (TOKEN_TTL_HOURS=24*7). For a SaaS, consider refresh-token rotation rather than long-lived bearer tokens.",
+    "/api/widget/* endpoints are unauthenticated and accept arbitrary session_id strings — anyone who guesses a session_id can post messages or escalate. Consider HMAC-signing the session_id or requiring the client_id alongside session ops."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "100% (17/17)", "frontend": "100% of smoke-tested flows"},
+  "test_credentials": "super@botaai.io / SuperAdmin@123 (seeded). Fresh tenants created via /api/auth/signup at test time.",
+  "seed_data_creation": "Created several demo tenants via signup (demo_a_*, demo_b_*, demo_fe_*, widget*_*) — all visible in Super Admin tenant list. No production data touched.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend regression suite at /app/backend/tests/backend_test.py is idempotent (signup-or-login fallback) and safe to rerun. Tests use REACT_APP_BACKEND_URL. Pytest config uses xdist -n 2 with loadscope. Widget end-to-end test calls Gemini live; expect ~5-10s. Frontend uses React Router 7 and @/ alias. Kanban uses HTML5 DnD which is not automated — only column rendering + ticket creation are verified.",
+  "rca of the issue": "Transient widget/message 500: emergentintegrations -> litellm raised 'Budget has been exceeded' on the first AI classify call. Test re-run succeeded, so condition is intermittent. RCA: most likely a per-window/per-key spending cap on the Emergent LLM proxy or a brief race in budget initialization. Mitigation: monitor EMERGENT_LLM_KEY budget; add retry-with-jitter around classify_message and answer_with_rag; surface error message instead of HTTP 500 when LLM is unavailable."
+}
