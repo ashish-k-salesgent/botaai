@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { Bot as BotIcon, Plus } from "lucide-react";
+import { can } from "@/lib/permissions";
+import { useAuth } from "@/lib/auth";
 
 export default function Bots() {
+  const { user } = useAuth();
+  const canEdit = can(user, "bots.edit");
   const [bots, setBots] = useState([]);
   const [active, setActive] = useState(null);
 
@@ -49,9 +53,11 @@ export default function Bots() {
           <div className="label-mono text-[var(--brand-primary)] mb-2">/ Bots</div>
           <h1 className="font-display font-black tracking-tighter text-4xl">Bot Studio</h1>
         </div>
-        <button onClick={createBot} data-testid="new-bot-btn" className="inline-flex items-center gap-2 bg-[var(--text-primary)] text-white px-4 py-2 text-sm font-semibold hover:bg-black">
+        {canEdit && (
+        <button onClick={createBot} data-testid="new-bot-btn" className="inline-flex items-center gap-2 btn-solid px-4 py-2 text-sm font-semibold">
           <Plus size={14} /> New bot
         </button>
+        )}
       </div>
 
       <div className="grid lg:grid-cols-4 gap-6">
@@ -61,7 +67,11 @@ export default function Bots() {
               key={b.id}
               onClick={() => setActive(b)}
               data-testid={`bot-item-${b.id}`}
-              className={`w-full text-left border p-3 ${active?.id === b.id ? "border-[var(--text-primary)] bg-[var(--text-primary)] text-white" : "border-[var(--border)] bg-white hover:bg-[var(--bg-soft)]"}`}
+              className={`w-full text-left border p-3 ${
+                active?.id === b.id
+                  ? "border-[var(--inverse-bg)] bg-[var(--inverse-bg)] text-[var(--inverse-fg)]"
+                  : "border-[var(--border)] bg-[var(--bg)] text-[var(--text-primary)] hover:bg-[var(--bg-soft)]"
+              }`}
             >
               <div className="flex items-center gap-2">
                 <BotIcon size={14} />
@@ -73,7 +83,7 @@ export default function Bots() {
         </div>
 
         {active && (
-          <div className="lg:col-span-3 border border-[var(--border)] bg-white p-6">
+          <div className="lg:col-span-3 border border-[var(--border)] bg-[var(--bg)] p-6">
             <div className="grid md:grid-cols-2 gap-5">
               {[
                 ["name", "Name", "text"],
@@ -93,7 +103,8 @@ export default function Bots() {
                     value={active[k] || ""}
                     onChange={(e) => setActive({ ...active, [k]: type === "number" ? parseFloat(e.target.value) : e.target.value })}
                     data-testid={`bot-${k}`}
-                    className="w-full border border-[var(--border)] px-3 py-2 text-sm"
+                    disabled={!canEdit}
+                    className="w-full border border-[var(--border)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 py-2 text-sm disabled:opacity-60"
                   />
                 </div>
               ))}
@@ -104,19 +115,22 @@ export default function Bots() {
                   value={active.system_prompt || ""}
                   onChange={(e) => setActive({ ...active, system_prompt: e.target.value })}
                   data-testid="bot-system-prompt"
-                  className="w-full border border-[var(--border)] px-3 py-2 text-sm font-mono"
+                  disabled={!canEdit}
+                  className="w-full border border-[var(--border)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 py-2 text-sm font-mono disabled:opacity-60"
                 />
               </div>
               <div className="md:col-span-2">
                 <label className="label-mono block mb-1">Model</label>
-                <select value={active.model} onChange={(e) => setActive({ ...active, model: e.target.value })} className="w-full border border-[var(--border)] px-3 py-2 text-sm">
+                <select value={active.model} disabled={!canEdit} onChange={(e) => setActive({ ...active, model: e.target.value })} className="w-full border border-[var(--border)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 py-2 text-sm disabled:opacity-60">
                   {["gemini-3-flash-preview", "gemini-3.5-flash", "gemini-3.1-pro-preview"].map((m) => <option key={m}>{m}</option>)}
                 </select>
               </div>
             </div>
-            <button onClick={save} data-testid="bot-save" className="mt-6 bg-[var(--brand-primary)] text-white px-5 py-2 text-sm font-semibold">
+            {canEdit && (
+            <button onClick={save} data-testid="bot-save" className="mt-6 btn-primary px-5 py-2 text-sm font-semibold">
               Save changes
             </button>
+            )}
           </div>
         )}
       </div>

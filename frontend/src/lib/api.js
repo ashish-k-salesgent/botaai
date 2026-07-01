@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8085";
 export const API = `${BACKEND_URL}/api`;
+export { BACKEND_URL };
 
 const TOKEN_KEY = "botaai_token";
 
@@ -26,6 +27,16 @@ api.interceptors.response.use(
       setToken(null);
       if (!window.location.pathname.startsWith("/login")) {
         window.location.href = "/login";
+      }
+    }
+    if (err?.response?.status === 403) {
+      const detail = String(err?.response?.data?.detail || "");
+      if (detail.toLowerCase().includes("trial has ended") || detail.toLowerCase().includes("suspended")) {
+        setToken(null);
+        const reason = detail.toLowerCase().includes("suspended") ? "suspended" : "expired";
+        if (!window.location.pathname.startsWith("/login")) {
+          window.location.href = `/login?reason=${reason}`;
+        }
       }
     }
     return Promise.reject(err);

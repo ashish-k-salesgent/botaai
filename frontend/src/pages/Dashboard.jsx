@@ -2,31 +2,30 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { Inbox, MessagesSquare, BookOpen, Users as UsersIcon, Bot, ArrowUpRight, Copy } from "lucide-react";
+import { ArrowUpRight, Copy, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { isTicketOverdue, qaIncompleteLabel } from "@/lib/tickets";
+import { hasModule } from "@/lib/modules";
 
 export default function Dashboard() {
   const { tenant } = useAuth();
   const [stats, setStats] = useState(null);
   const [tickets, setTickets] = useState([]);
-  const [chats, setChats] = useState([]);
+
+  const [qaTickets, setQaTickets] = useState([]);
 
   useEffect(() => {
-    Promise.all([
-      api.get("/analytics/summary"),
-      api.get("/tickets"),
-      api.get("/chats"),
-    ]).then(([s, t, c]) => {
-      setStats(s.data);
-      setTickets(t.data.slice(0, 5));
-      setChats(c.data.slice(0, 5));
+    api.get("/analytics/summary").then((r) => {
+      setStats(r.data);
+      setQaTickets(r.data?.qa?.incomplete_tickets || []);
     });
+    api.get("/tickets", { params: { overdue: "yes" } }).then((r) => setTickets(r.data.slice(0, 6))).catch(() => {});
   }, []);
 
-  const copy = (txt) => {
-    navigator.clipboard.writeText(txt);
-    toast.success("Copied");
-  };
+  const copy = (txt) => { navigator.clipboard.writeText(txt); toast.success("Copied"); };
+  const ov = stats?.tickets || {};
+  const due = stats?.due_dates || {};
+  const qaCount = stats?.qa?.incomplete_count ?? 0;
 
   return (
     <div className="p-8 max-w-7xl mx-auto" data-testid="dashboard-page">
@@ -41,82 +40,93 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* KPI grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[var(--border)] border border-[var(--border)] mb-8">
-        <Kpi label="Open tickets" value={stats?.tickets?.open ?? "—"} icon={Inbox} link="/app/tickets" />
-        <Kpi label="Live chats" value={stats?.chats?.live ?? "—"} icon={MessagesSquare} link="/app/chats" />
-        <Kpi label="Knowledge docs" value={stats?.knowledge?.docs ?? "—"} icon={BookOpen} link="/app/knowledge" />
-        <Kpi label="Team members" value={stats?.users?.total ?? "—"} icon={UsersIcon} link="/app/users" />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-px bg-[var(--border)] border border-[var(--border)] mb-6">
+        <Kpi label="Total" value={ov.total ?? "—"} link="/app/tickets" />
+        <Kpi label="Open" value={ov.open ?? "—"} link="/app/tickets" />
+        <Kpi label="In progress" value={ov.in_progress ?? "—"} link="/app/tickets" />
+        <Kpi label="Completed" value={ov.completed ?? "—"} link="/app/tickets" />
+        <Kpi label="Closed" value={ov.closed ?? "—"} link="/app/tickets" />
+        <Kpi label="Overdue" value={ov.overdue ?? "—"} link="/app/tickets" danger />
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Recent tickets */}
-        <div className="lg:col-span-2 border border-[var(--border)] bg-white">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-px bg-[var(--border)] border border-[var(--border)] mb-8">
+        <MiniStat label="Due today" value={due.due_today ?? 0} />
+        <MiniStat label="Due this week" value={due.due_this_week ?? 0} />
+        <MiniStat label="Overdue" value={due.overdue ?? 0} danger />
+        <MiniStat label="QA incomplete" value={qaCount} warn={qaCount > 0} />
+        <MiniStat label="On time" value={due.completed_on_time ?? 0} />
+        <MiniStat label="Late done" value={due.completed_late ?? 0} />
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        <div className="panel">
           <div className="px-5 py-3 border-b border-[var(--border)] flex justify-between items-center">
-            <span className="label-mono">Recent tickets</span>
-            <Link to="/app/tickets" className="text-xs font-semibold flex items-center gap-1">
-              View all <ArrowUpRight size={12} />
-            </Link>
+            <span className="label-mono text-red-700 flex items-center gap-2"><AlertTriangle size={14} /> Overdue tickets</span>
+            <Link to="/app/tickets" className="text-xs font-semibold flex items-center gap-1">View board <ArrowUpRight size={12} /></Link>
           </div>
-          {tickets.length === 0 && (
-            <div className="p-8 text-sm text-[var(--text-muted)]">
-              No tickets yet — try the widget on{" "}
-              <Link to="/widget-demo" className="underline">/widget-demo</Link>.
-            </div>
-          )}
+          {tickets.length === 0 && <div className="p-8 text-sm text-[var(--text-muted)]">No overdue tickets</div>}
           {tickets.map((t) => (
-            <Link
-              key={t.id}
-              to={`/app/tickets/${t.id}`}
-              data-testid={`dash-ticket-${t.code}`}
-              className="grid grid-cols-12 gap-4 px-5 py-3 border-b border-[var(--border)] hover:bg-[var(--bg-soft)] text-sm"
-            >
-              <span className="col-span-2 font-mono text-xs">{t.code}</span>
-              <span className="col-span-6 truncate">{t.title}</span>
+            <Link key={t.id} to={`/app/tickets/${t.id}`} className={`grid grid-cols-12 gap-4 px-5 py-3 border-b border-[var(--border)] hover:bg-red-50 text-sm ${isTicketOverdue(t) ? "bg-red-50/50" : ""}`}>
+              <span className="col-span-2 font-mono text-xs text-red-700">{t.code}</span>
+              <span className="col-span-5 truncate">{t.title}</span>
               <StatusBadge status={t.status} />
               <PriorityBadge priority={t.priority} />
             </Link>
           ))}
         </div>
 
-        {/* Widget snippet */}
-        <div className="border border-[var(--text-primary)] bg-[var(--text-primary)] text-white p-5">
-          <div className="label-mono text-white/60 mb-3">/ Widget SDK</div>
-          <div className="font-display font-black text-2xl mb-3">Embed in 3 lines</div>
-          <pre className="text-[10px] font-mono bg-black/40 p-3 overflow-x-auto leading-relaxed">
-{`<script src="botaai.io/widget.js"
- data-client="${tenant?.client_id || "..."}"
-></script>`}
-          </pre>
-          <button
-            onClick={() => copy(tenant?.client_id || "")}
-            data-testid="copy-client-id"
-            className="mt-3 flex items-center gap-2 text-xs label-mono hover:text-[var(--brand-warning)]"
-          >
-            <Copy size={12} /> Copy Client ID
-          </button>
-          <Link
-            to="/widget-demo"
-            className="mt-6 inline-block bg-white text-black text-xs font-semibold px-3 py-2"
-            data-testid="widget-demo-launch"
-          >
-            Try widget demo →
-          </Link>
+        <div className="panel border-[var(--warning-border)]">
+          <div className="px-5 py-3 border-b border-amber-200 flex justify-between items-center bg-amber-50/50">
+            <span className="label-mono text-amber-800 flex items-center gap-2"><AlertTriangle size={14} /> QA incomplete</span>
+            <Link to="/app/tickets" className="text-xs font-semibold flex items-center gap-1">View board <ArrowUpRight size={12} /></Link>
+          </div>
+          {qaTickets.length === 0 && <div className="p-8 text-sm text-[var(--text-muted)]">All QA tickets have scenarios completed</div>}
+          {qaTickets.map((t) => (
+            <Link key={t.id} to={`/app/tickets/${t.id}`} className="grid grid-cols-12 gap-4 px-5 py-3 border-b border-amber-100 hover:bg-amber-50 text-sm">
+              <span className="col-span-2 font-mono text-xs text-amber-800">{t.code}</span>
+              <span className="col-span-4 truncate">{t.title}</span>
+              <span className="col-span-3 text-[10px] font-mono text-amber-700 truncate">{qaIncompleteLabel(t)}</span>
+              <StatusBadge status={t.status} />
+            </Link>
+          ))}
         </div>
       </div>
+
+      {hasModule(tenant, "bot") && (
+      <div className="promo-banner p-5 max-w-lg">
+        <div className="label-mono opacity-60 mb-3">/ Widget SDK</div>
+        <div className="font-display font-black text-2xl mb-3">Embed in 3 lines</div>
+        <pre className="code-block text-[10px] p-3 leading-relaxed">{`<script>
+  window.BOTAAI_VISITOR = { name, email };
+</script>
+<script src="botaai.io/widget.js"
+  data-client="${tenant?.client_id || "..."}">
+</script>`}</pre>
+        <button onClick={() => copy(tenant?.client_id || "")} className="mt-3 flex items-center gap-2 text-xs label-mono opacity-80 hover:opacity-100 hover:text-[var(--brand-warning)]"><Copy size={12} /> Copy Client ID</button>
+        <Link to="/widget-demo" className="mt-6 inline-block btn-solid text-xs font-semibold px-3 py-2">Try widget demo →</Link>
+      </div>
+      )}
     </div>
   );
 }
 
-function Kpi({ label, value, icon: Icon, link }) {
+function Kpi({ label, value, link, danger }) {
   return (
-    <Link to={link} className="bg-white p-5 hover:bg-[var(--bg-soft)] block">
-      <div className="flex items-center justify-between mb-2">
-        <span className="label-mono text-[var(--text-muted)]">{label}</span>
-        <Icon size={14} className="text-[var(--text-muted)]" />
-      </div>
-      <div className="font-display font-black text-4xl tracking-tighter">{value}</div>
+    <Link to={link} className={`p-4 hover:bg-[var(--bg-soft)] block ${danger ? "stat-cell-danger" : "stat-cell"}`}>
+      <div className={`label-mono text-[10px] mb-1 ${danger ? "text-red-700" : "text-[var(--text-muted)]"}`}>{label}</div>
+      <div className={`font-display font-black text-3xl ${danger ? "text-red-700" : ""}`}>{value}</div>
     </Link>
+  );
+}
+
+function MiniStat({ label, value, danger, warn }) {
+  const warnCls = warn ? "stat-cell-warn" : danger ? "stat-cell-danger" : "stat-cell";
+  const valCls = warn ? "text-amber-800" : danger ? "text-red-700" : "";
+  return (
+    <div className={`p-4 ${warnCls}`}>
+      <div className="label-mono text-[10px] text-[var(--text-muted)]">{label}</div>
+      <div className={`font-display font-black text-2xl ${valCls}`}>{value}</div>
+    </div>
   );
 }
 
@@ -125,6 +135,7 @@ export function StatusBadge({ status }) {
     new: "bg-blue-50 text-blue-700",
     open: "bg-yellow-50 text-yellow-800",
     in_progress: "bg-orange-50 text-orange-700",
+    overdue: "bg-red-100 text-red-800",
     development: "bg-purple-50 text-purple-700",
     qa: "bg-teal-50 text-teal-700",
     testing: "bg-cyan-50 text-cyan-700",

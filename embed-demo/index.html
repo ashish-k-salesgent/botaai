@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SG Routes — Demo App (BotAAI Embed)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="login-view" class="login-wrap">
+    <div class="login-card">
+      <h1>SG Routes</h1>
+      <p>Your product website — not BotAAI. Sign up or sign in here, then use the chat widget.</p>
+
+      <div class="auth-tabs">
+        <button type="button" id="tab-signin" class="active">Sign in</button>
+        <button type="button" id="tab-signup">Sign up</button>
+      </div>
+
+      <div id="signin-panel">
+        <form id="signin-form">
+          <label for="signin-username">Username</label>
+          <input id="signin-username" type="text" required autocomplete="username" />
+          <label for="signin-password">Password</label>
+          <input id="signin-password" type="password" required autocomplete="current-password" />
+          <div id="signin-error" class="error"></div>
+          <button type="submit" class="primary">Sign in</button>
+        </form>
+      </div>
+
+      <div id="signup-panel" class="hidden">
+        <form id="signup-form">
+          <label for="signup-username">Username</label>
+          <input id="signup-username" type="text" required autocomplete="username" />
+          <label for="signup-email">Email</label>
+          <input id="signup-email" type="email" required autocomplete="email" />
+          <label for="signup-password">Password</label>
+          <input id="signup-password" type="password" required autocomplete="new-password" />
+          <label for="signup-confirm">Confirm password</label>
+          <input id="signup-confirm" type="password" required autocomplete="new-password" />
+          <div id="signup-error" class="error"></div>
+          <button type="submit" class="primary">Create account</button>
+        </form>
+      </div>
+
+      <div class="hint">
+        Accounts are stored in this browser only (demo). BotAAI never sees your password — only
+        <code>username</code> + <code>email</code> are passed to the widget.
+      </div>
+    </div>
+  </div>
+
+  <div id="app-view" class="hidden">
+    <header>
+      <div class="logo">SG Routes</div>
+      <div style="display:flex;align-items:center">
+        <span class="user" id="user-badge"></span>
+        <button class="logout" id="logout-btn">Logout</button>
+      </div>
+    </header>
+    <main>
+      <div class="hero">
+        <h2>Welcome, <span id="welcome-name">User</span></h2>
+        <p style="color:#6b7280;margin:0">
+          Chat bubble bottom-right is BotAAI. Your login here is separate from BotAAI admin (3005).
+        </p>
+      </div>
+
+      <div id="visitor-debug" class="visitor-debug"></div>
+
+      <div class="cards">
+        <div class="card"><h3>Orders</h3><p>Track shipments and deliveries.</p></div>
+        <div class="card"><h3>Routes</h3><p>Plan and optimize delivery routes.</p></div>
+        <div class="card"><h3>Support</h3><p>Open the chat bubble to test AI + live agent.</p></div>
+      </div>
+
+      <div class="embed-note">
+        <strong>Embed on your site</strong><br />
+        1. After login: <code>window.BOTAAI_VISITOR = { name: "username", email: "you@co.com" }</code><br />
+        2. Load widget:<br />
+        <code>&lt;script src="http://localhost:8085/widget.js" data-client="botaai_892ae1e0-579" data-api="http://localhost:8085"&gt;&lt;/script&gt;</code><br /><br />
+        Agents see chats at <a href="http://localhost:3005/app/chats" target="_blank">localhost:3005/app/chats</a>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

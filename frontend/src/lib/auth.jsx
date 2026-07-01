@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import api, { setToken, getToken } from "./api";
+import { ensureUserPermissions } from "./permissions";
 
 const AuthCtx = createContext(null);
 
@@ -17,7 +18,7 @@ export function AuthProvider({ children }) {
     api
       .get("/auth/me")
       .then((r) => {
-        setUser(r.data.user);
+        setUser(ensureUserPermissions(r.data.user));
         setTenant(r.data.tenant);
       })
       .catch(() => {
@@ -29,17 +30,19 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     const r = await api.post("/auth/login", { email, password });
     setToken(r.data.token);
-    setUser(r.data.user);
+    const user = ensureUserPermissions(r.data.user);
+    setUser(user);
     setTenant(r.data.tenant);
-    return r.data;
+    return { ...r.data, user };
   };
 
   const signup = async (data) => {
     const r = await api.post("/auth/signup", data);
     setToken(r.data.token);
-    setUser(r.data.user);
+    const user = ensureUserPermissions(r.data.user);
+    setUser(user);
     setTenant(r.data.tenant);
-    return r.data;
+    return { ...r.data, user };
   };
 
   const logout = () => {
@@ -49,8 +52,15 @@ export function AuthProvider({ children }) {
     window.location.href = "/";
   };
 
+  const refreshUser = async () => {
+    const r = await api.get("/auth/me");
+    setUser(ensureUserPermissions(r.data.user));
+    setTenant(r.data.tenant);
+    return r.data;
+  };
+
   return (
-    <AuthCtx.Provider value={{ user, tenant, loading, login, signup, logout, setTenant }}>
+    <AuthCtx.Provider value={{ user, tenant, loading, login, signup, logout, setTenant, refreshUser }}>
       {children}
     </AuthCtx.Provider>
   );

@@ -9,7 +9,7 @@ const LOGOS = [
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-white text-[var(--text-primary)]">
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--text-primary)]">
       {/* Nav */}
       <header className="border-b border-[var(--border)]">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -32,7 +32,7 @@ export default function Landing() {
             <Link
               to="/signup"
               data-testid="nav-signup"
-              className="text-sm font-semibold px-4 py-2 bg-[var(--text-primary)] text-white hover:bg-black"
+              className="text-sm font-semibold px-4 py-2 btn-solid"
             >
               Start free trial
             </Link>
@@ -63,7 +63,7 @@ export default function Landing() {
                 <Link
                   to="/signup"
                   data-testid="hero-cta-signup"
-                  className="group inline-flex items-center gap-2 bg-[var(--brand-primary)] text-white px-5 py-3 text-sm font-semibold hover:bg-[var(--brand-primary-hover)]"
+                  className="group inline-flex items-center gap-2 btn-primary px-5 py-3 text-sm font-semibold"
                 >
                   Start 14-day trial
                   <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
@@ -71,7 +71,7 @@ export default function Landing() {
                 <Link
                   to="/widget-demo"
                   data-testid="hero-cta-demo"
-                  className="inline-flex items-center gap-2 border border-[var(--text-primary)] px-5 py-3 text-sm font-semibold hover:bg-[var(--text-primary)] hover:text-white"
+                  className="inline-flex items-center gap-2 border border-[var(--inverse-bg)] px-5 py-3 text-sm font-semibold hover:bg-[var(--inverse-bg)] hover:text-[var(--inverse-fg)]"
                 >
                   Try the widget
                 </Link>
@@ -85,7 +85,7 @@ export default function Landing() {
 
             <div className="lg:col-span-5">
               {/* Mock chat preview */}
-              <div className="border border-[var(--text-primary)] bg-white">
+              <div className="panel border-[var(--inverse-bg)]">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-[var(--brand-success)]" />
@@ -101,7 +101,7 @@ export default function Landing() {
                     text="I'm sorry. I've classified this as a Bug · High. Would you like me to create a support ticket?"
                   />
                   <div className="flex gap-2">
-                    <span className="border border-[var(--text-primary)] px-3 py-1 text-xs font-semibold">YES</span>
+                    <span className="border border-[var(--inverse-bg)] px-3 py-1 text-xs font-semibold">YES</span>
                     <span className="border border-[var(--border)] px-3 py-1 text-xs">NO</span>
                   </div>
                 </div>
@@ -154,7 +154,7 @@ export default function Landing() {
               { i: Zap, t: "Auto-Classify", d: "Every message gets category, priority, sentiment & urgency score." },
               { i: ShieldCheck, t: "Multi-tenant SaaS", d: "Client ID + secret, trial → plan, super admin, full audit trail." },
             ].map((f) => (
-              <div key={f.t} className="bg-white p-6 lg:col-span-2">
+              <div key={f.t} className="bg-[var(--bg)] p-6 lg:col-span-2">
                 <f.i size={20} className="text-[var(--brand-primary)] mb-4" />
                 <div className="font-display font-bold text-lg mb-1">{f.t}</div>
                 <div className="text-sm text-[var(--text-secondary)] leading-relaxed">{f.d}</div>
@@ -173,27 +173,29 @@ export default function Landing() {
               Three lines. <br />Done.
             </h2>
             <p className="mt-4 text-[var(--text-secondary)] max-w-md">
-              Drop the script, pass your Client ID, and the bot is live in the bottom-right of any
-              application — themed to your brand.
+              Drop the script on your site after login. Pass your Client ID and the signed-in
+              customer&apos;s name + email — no BotAAI password on your app.
             </p>
             <Link to="/widget-demo" data-testid="widget-demo-link" className="mt-6 inline-flex items-center gap-2 underline underline-offset-4 font-semibold">
               See live demo <ArrowRight size={14} />
             </Link>
+            <a href="http://localhost:3010" target="_blank" rel="noopener noreferrer" className="mt-3 block text-sm text-[var(--brand-primary)] font-semibold">
+              External embed demo → localhost:3010
+            </a>
           </div>
-          <pre className="bg-[var(--text-primary)] text-white text-xs font-mono p-6 overflow-x-auto leading-relaxed">
-{`<!-- Embed BotAAI in any application -->
+          <pre className="code-block leading-relaxed">
+{`<!-- Your site — after customer signs in -->
+<script>
+  window.BOTAAI_VISITOR = {
+    name: user.displayName,
+    email: user.email
+  };
+</script>
 <script
   src="https://botaai.io/widget.js"
   data-client="botaai_xxxxxxxxxxxx"
-  data-secret="********************************"
-  data-theme="dark"
-></script>
-
-// or initialize programmatically
-window.BotAAI?.init({
-  clientId: "botaai_xxxxxxxxxxxx",
-  visitor: { name: "Ashish", email: "..." }
-});`}
+  data-api="https://api.botaai.io"
+></script>`}
           </pre>
         </div>
       </section>
@@ -215,7 +217,7 @@ window.BotAAI?.init({
             ].map((p) => (
               <div
                 key={p.name}
-                className={`border p-6 ${p.featured ? "border-[var(--text-primary)] bg-[var(--text-primary)] text-white" : "border-[var(--border)] bg-white"}`}
+                className={`border p-6 ${p.featured ? "promo-banner" : "panel"}`}
               >
                 <div className="label-mono opacity-70">{p.name}</div>
                 <div className="font-display font-black tracking-tighter text-5xl mt-3">{p.price}</div>
@@ -229,7 +231,7 @@ window.BotAAI?.init({
                   to="/signup"
                   data-testid={`pricing-${p.name.toLowerCase()}-cta`}
                   className={`block text-center py-2.5 text-sm font-semibold ${
-                    p.featured ? "bg-white text-[var(--text-primary)]" : "bg-[var(--text-primary)] text-white"
+                    p.featured ? "bg-[var(--bg)] text-[var(--text-primary)]" : "btn-solid"
                   }`}
                 >
                   Get started
@@ -255,18 +257,18 @@ window.BotAAI?.init({
       </section>
 
       {/* CTA */}
-      <section className="bg-[var(--text-primary)] text-white">
+      <section className="promo-banner">
         <div className="max-w-5xl mx-auto px-6 py-24 text-center">
           <h2 className="font-display font-black tracking-tighter text-5xl">
             Ship support that ships itself.
           </h2>
-          <p className="text-white/70 mt-4 max-w-xl mx-auto">
+          <p className="opacity-70 mt-4 max-w-xl mx-auto">
             14-day trial. No credit card. Your first ticket in five minutes.
           </p>
           <Link
             to="/signup"
             data-testid="footer-cta-signup"
-            className="mt-8 inline-flex items-center gap-2 bg-white text-[var(--text-primary)] px-6 py-3 text-sm font-semibold hover:bg-[var(--brand-warning)]"
+            className="mt-8 inline-flex items-center gap-2 bg-[var(--bg)] text-[var(--text-primary)] px-6 py-3 text-sm font-semibold hover:bg-[var(--brand-warning)]"
           >
             Start free trial <ArrowRight size={16} />
           </Link>
@@ -292,7 +294,7 @@ function ChatBubble({ who, text }) {
     );
   }
   return (
-    <div className="max-w-[85%] ml-auto bg-[var(--text-primary)] text-white px-3 py-2 text-sm">
+    <div className="max-w-[85%] ml-auto bg-[var(--inverse-bg)] text-[var(--inverse-fg)] px-3 py-2 text-sm">
       {text}
     </div>
   );

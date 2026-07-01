@@ -62,7 +62,7 @@ export default function Signup() {
                 value={form[k]}
                 onChange={(e) => setForm({ ...form, [k]: e.target.value })}
                 data-testid={`signup-${k}`}
-                className="w-full border border-[var(--border)] px-3 py-2 text-sm focus:border-[var(--brand-primary)]"
+                className="w-full border border-[var(--border)] px-3 py-2 text-sm focus:border-[var(--brand-primary)] field-input"
                 placeholder={ph}
               />
             </div>
@@ -72,7 +72,7 @@ export default function Signup() {
             type="submit"
             disabled={loading}
             data-testid="signup-submit"
-            className="w-full bg-[var(--text-primary)] text-white py-3 text-sm font-semibold hover:bg-black disabled:opacity-50"
+            className="w-full btn-solid py-3 text-sm font-semibold disabled:opacity-50"
           >
             {loading ? "Provisioning…" : "Start free 14-day trial"}
           </button>

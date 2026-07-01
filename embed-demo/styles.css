@@ -1,0 +1,142 @@
+/* SG Routes — external demo app (simulates a 3rd-party website) */
+:root {
+  --brand: #0f766e;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --bg: #f9fafb;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.hidden { display: none !important; }
+
+/* Login */
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 32px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.06);
+}
+.login-card h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 800;
+}
+.login-card p { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); display: block; margin-bottom: 6px; }
+input, select {
+  width: 100%;
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+button.primary {
+  width: 100%;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+}
+button.primary:hover { opacity: .92; }
+.error { color: #dc2626; font-size: 13px; margin-bottom: 12px; }
+.auth-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+.auth-tabs button {
+  flex: 1;
+  border: none;
+  background: #fff;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--muted);
+}
+.auth-tabs button.active {
+  background: var(--brand);
+  color: #fff;
+}
+.visitor-debug {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.visitor-debug code {
+  background: #f3f4f6;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+.visitor-debug .muted { color: var(--muted); font-size: 12px; }
+.hint { font-size: 12px; color: var(--muted); margin-top: 16px; line-height: 1.5; }
+
+/* App */
+header {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+header .logo { font-weight: 800; color: var(--brand); }
+header .user { font-size: 13px; color: var(--muted); }
+header button.logout {
+  background: none;
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 12px;
+}
+main { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+.hero {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 32px;
+  margin-bottom: 24px;
+}
+.hero h2 { margin: 0 0 8px; font-size: 24px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 20px;
+}
+.card h3 { margin: 0 0 8px; font-size: 14px; }
+.card p { margin: 0; font-size: 13px; color: var(--muted); }
+.embed-note {
+  margin-top: 24px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.embed-note code { background: #d1fae5; padding: 2px 6px; font-size: 12px; }

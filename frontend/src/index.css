@@ -5,7 +5,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap");
 
-/* Fallback for Cabinet Grotesk (not on Google Fonts officially) */
 @font-face {
   font-family: "Cabinet Grotesk Fallback";
   src: local("Archivo Black"), local("Inter Black");
@@ -20,10 +19,63 @@
   --brand-success: #34c759;
   --bg: #ffffff;
   --bg-soft: #f9fafb;
+  --input-bg: #ffffff;
   --text-primary: #111827;
   --text-secondary: #4b5563;
   --text-muted: #9ca3af;
   --border: #e5e7eb;
+  --inverse-bg: #111827;
+  --inverse-fg: #ffffff;
+  --inverse-hover: #000000;
+  --danger-surface: #fef2f2;
+  --danger-text: #991b1b;
+  --danger-border: #fca5a5;
+  --warning-surface: #fffbeb;
+  --warning-text: #92400e;
+  --warning-border: #fcd34d;
+  --customer-surface: rgba(240, 253, 250, 0.9);
+  --customer-text: #115e59;
+  --customer-border: #5eead4;
+  --info-surface: #eff6ff;
+  --info-text: #1d4ed8;
+  --info-border: #93c5fd;
+  --success-surface: #f0fdf4;
+  --success-text: #15803d;
+  --unread-surface: rgba(239, 246, 255, 0.9);
+  --dropdown-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.dark {
+  color-scheme: dark;
+  --brand-primary: #6b9aff;
+  --brand-primary-hover: #8ab4ff;
+  --brand-destructive: #ff6b6b;
+  --bg: #111827;
+  --bg-soft: #1f2937;
+  --input-bg: #1f2937;
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --border: #374151;
+  --inverse-bg: #1f2937;
+  --inverse-fg: #f3f4f6;
+  --inverse-hover: #374151;
+  --danger-surface: #4a1c1c;
+  --danger-text: #fecaca;
+  --danger-border: #ef4444;
+  --warning-surface: #422006;
+  --warning-text: #fde68a;
+  --warning-border: #f59e0b;
+  --customer-surface: #134e4a;
+  --customer-text: #99f6e4;
+  --customer-border: #2dd4bf;
+  --info-surface: rgba(30, 58, 138, 0.45);
+  --info-text: #93c5fd;
+  --info-border: #3b82f6;
+  --success-surface: #14532d;
+  --success-text: #86efac;
+  --unread-surface: rgba(30, 58, 138, 0.35);
+  --dropdown-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
 html, body {
@@ -80,6 +132,28 @@ html, body {
     --ring: 225 100% 33%;
     --radius: 0.125rem;
   }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 224 76% 68%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217 33% 20%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 20%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 20%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 72% 63%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 25% 28%;
+    --input: 217 25% 28%;
+    --ring: 224 76% 68%;
+  }
 }
 
 @layer base {
@@ -91,11 +165,166 @@ html, body {
   }
 }
 
-/* Hide scrollbars in kanban for cleaner look */
+@layer components {
+  .surface {
+    background: var(--bg);
+    color: var(--text-primary);
+  }
+
+  .surface-soft {
+    background: var(--bg-soft);
+    color: var(--text-primary);
+  }
+
+  .btn-solid {
+    background: var(--inverse-bg);
+    color: var(--inverse-fg);
+    border: 1px solid transparent;
+  }
+
+  .btn-solid:hover {
+    background: var(--inverse-hover);
+    color: var(--inverse-fg);
+  }
+
+  .alert-banner {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    line-height: 1.45;
+    padding: 0.5rem 0.75rem;
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  .alert-danger {
+    background: var(--danger-surface);
+    border-color: var(--danger-border);
+    color: var(--danger-text);
+  }
+
+  .alert-warning {
+    background: var(--warning-surface);
+    border-color: var(--warning-border);
+    color: var(--warning-text);
+  }
+
+  .alert-warning a,
+  .alert-danger a {
+    color: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  .alert-customer {
+    background: var(--customer-surface);
+    border-color: var(--customer-border);
+    color: var(--customer-text);
+  }
+
+  .alert-info {
+    background: var(--info-surface);
+    border-color: var(--info-border, var(--info-text));
+    color: var(--info-text);
+  }
+
+  .alert-success {
+    background: var(--success-surface);
+    border-color: var(--success-text);
+    color: var(--success-text);
+  }
+
+  .panel {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+
+  .modal-shell {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+
+  .modal-header {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+
+  .field-input {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .field-input-sm {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .tab-active {
+    border-color: var(--brand-primary) !important;
+    background: var(--brand-primary) !important;
+    color: #ffffff !important;
+  }
+
+  .tab-inactive {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-primary);
+  }
+
+  .btn-primary {
+    background: var(--brand-primary);
+    color: #ffffff;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.92;
+  }
+
+  .code-block {
+    background: var(--inverse-bg);
+    color: var(--inverse-fg);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    padding: 1rem;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+  }
+
+  .stat-cell {
+    background: var(--bg);
+    color: var(--text-primary);
+  }
+
+  .stat-cell-danger {
+    background: var(--danger-surface);
+    color: var(--danger-text);
+  }
+
+  .stat-cell-warn {
+    background: var(--warning-surface);
+    color: var(--warning-text);
+  }
+
+  .promo-banner {
+    background: var(--inverse-bg);
+    color: var(--inverse-fg);
+    border: 1px solid var(--border);
+  }
+}
+
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Crisp Swiss look - sharp focus */
 button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
   outline: 2px solid var(--brand-primary) !important;
   outline-offset: 1px;
@@ -107,32 +336,211 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   padding: 2px 6px;
   border: 1px solid var(--border);
   border-radius: 2px;
-  background: #fff;
+  background: var(--bg);
+  color: var(--text-primary);
 }
 
 .ticket-card {
-  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  transition: border-color 120ms ease;
 }
 .ticket-card:hover {
-  border-color: #111827;
-  transform: translateY(-1px);
+  border-color: var(--text-muted);
 }
 
-/* Drag styles */
 .dragging { opacity: 0.5; }
-.drag-over { background: #eff6ff; border-color: #002fa7 !important; }
+.drag-over {
+  background: var(--info-surface);
+  border-color: var(--brand-primary) !important;
+}
 
-/* Grid background */
 .grid-bg {
   background-image:
     linear-gradient(to right, rgba(17, 24, 39, 0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(17, 24, 39, 0.04) 1px, transparent 1px);
   background-size: 56px 56px;
 }
+.dark .grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
 
-/* Marquee */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 .marquee { animation: marquee 28s linear infinite; }
+
+@keyframes typing-bounce {
+  0%, 60%, 100% { opacity: 0.2; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-2px); }
+}
+.typing-dots span {
+  animation: typing-bounce 1.2s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+/* Dark mode: fix hardcoded Tailwind surfaces for readable contrast */
+.dark .bg-white {
+  background-color: var(--bg) !important;
+  color: var(--text-primary);
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+}
+
+.dark .bg-red-50,
+.dark .bg-red-50\/50,
+.dark .hover\:bg-red-50:hover {
+  background-color: var(--danger-surface) !important;
+}
+
+.dark .text-red-600,
+.dark .text-red-700,
+.dark .text-red-800 {
+  color: var(--danger-text) !important;
+}
+
+.dark .border-red-300,
+.dark .border-red-500,
+.dark .border-red-600 {
+  border-color: var(--danger-border) !important;
+}
+
+.dark .bg-teal-50,
+.dark .bg-teal-50\/40,
+.dark .bg-teal-50\/50 {
+  background-color: var(--customer-surface) !important;
+}
+
+.dark .text-teal-700,
+.dark .text-teal-800 {
+  color: var(--customer-text) !important;
+}
+
+.dark .border-teal-200,
+.dark .border-teal-300,
+.dark .border-teal-400 {
+  border-color: var(--customer-border) !important;
+}
+
+.dark .bg-blue-50,
+.dark .bg-blue-50\/40 {
+  background-color: var(--info-surface) !important;
+}
+
+.dark .text-blue-700 {
+  color: var(--info-text) !important;
+}
+
+.dark .bg-amber-50,
+.dark .bg-amber-50\/40 {
+  background-color: var(--warning-surface) !important;
+}
+
+.dark .text-amber-700,
+.dark .text-amber-800,
+.dark .text-amber-900 {
+  color: var(--warning-text) !important;
+}
+
+.dark .border-amber-200,
+.dark .border-amber-300,
+.dark .border-amber-400 {
+  border-color: var(--warning-border) !important;
+}
+
+.dark .bg-green-50,
+.dark .bg-green-50\/40 {
+  background-color: var(--success-surface) !important;
+}
+
+.dark .text-green-700,
+.dark .text-green-800 {
+  color: var(--success-text) !important;
+}
+
+.dark .border-green-300 {
+  border-color: var(--success-text) !important;
+}
+
+.dark .hover\:bg-black:hover {
+  background-color: var(--inverse-hover) !important;
+  color: var(--inverse-fg) !important;
+}
+
+.dark .shadow-lg,
+.dark .shadow-sm,
+.dark .shadow-xl,
+.dark .shadow-2xl {
+  box-shadow: var(--dropdown-shadow) !important;
+}
+
+.dark .recharts-default-tooltip {
+  background: var(--bg) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark .recharts-default-tooltip .recharts-tooltip-label,
+.dark .recharts-default-tooltip .recharts-tooltip-item {
+  color: var(--text-primary) !important;
+}
+
+/* Inverse surfaces: keep readable text on the element and all descendants */
+.promo-banner,
+.code-block,
+.btn-solid {
+  color: var(--inverse-fg);
+}
+
+.promo-banner *,
+.code-block *,
+.btn-solid * {
+  color: inherit;
+}
+
+.dark .promo-banner,
+.dark .code-block {
+  background: var(--bg-soft);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.dark .promo-banner *,
+.dark .code-block * {
+  color: inherit;
+}
+
+.dark .btn-solid {
+  background: var(--brand-primary);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.dark .btn-solid:hover {
+  background: var(--brand-primary-hover);
+  color: #ffffff;
+}
+
+.dark .btn-solid * {
+  color: inherit;
+}
+
+.module-checkbox {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  accent-color: var(--brand-primary);
+  cursor: pointer;
+}
+
+.module-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}

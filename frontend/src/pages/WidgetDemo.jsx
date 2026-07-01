@@ -7,7 +7,7 @@ export default function WidgetDemo() {
   const [active, setActive] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--text-primary)]">
       <header className="border-b border-[var(--border)]">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="font-display font-black text-xl">BotAAI</Link>
@@ -23,7 +23,7 @@ export default function WidgetDemo() {
           The widget will appear in the bottom-right just like it would inside any of your products.
         </p>
 
-        <div className="border border-[var(--text-primary)] bg-white p-6">
+        <div className="panel p-6">
           <label className="label-mono block mb-2">Client ID</label>
           <div className="flex gap-2">
             <input
@@ -31,13 +31,13 @@ export default function WidgetDemo() {
               onChange={(e) => setClientId(e.target.value)}
               data-testid="widget-client-id"
               placeholder="botaai_xxxxxxxxxxxx"
-              className="flex-1 border border-[var(--border)] px-3 py-2 text-sm font-mono"
+              className="flex-1 field-input font-mono"
             />
             <button
               onClick={() => setActive(true)}
               disabled={!clientId.trim()}
               data-testid="widget-launch"
-              className="bg-[var(--brand-primary)] text-white px-5 py-2 text-sm font-semibold disabled:opacity-50"
+              className="btn-primary px-5 py-2 text-sm font-semibold disabled:opacity-50"
             >
               Launch widget
             </button>
