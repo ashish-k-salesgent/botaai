@@ -1,0 +1,17 @@
+{
+  "name": "botaai",
+  "version": "1.0.0",
+  "description": "BotaAI Express application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "jest --forceExit"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
+  }
+}
